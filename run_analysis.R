@@ -72,4 +72,9 @@ new_data2<-aggregate(. ~subject + activity, new_data, mean)
 #order returns a permutation which rearranges its first argument into ascending or descending order, 
 #breaking ties by further arguments; better than 'sort.list' for data frames.
 new_data2<-new_data2[order(new_data2$subject,new_data2$activity),]
-write.table(new_data, file = "tidydata.txt",row.name=FALSE)#write to text file
+
+##Reduce file size for better handling
+library(reshape2) ## required for 'melt' & 'dcast'
+allData.melted <- melt(new_data, id = c("subject", "activity"))
+allData.mean <- dcast(allData.melted, subject + activity ~ variable, mean)
+write.table(allData.mean, "tidy_data_set.txt", row.names = FALSE, quote = FALSE)
